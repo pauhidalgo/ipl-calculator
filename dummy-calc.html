@@ -1,0 +1,193 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>dummy calc - no db access :(</title>
+</head>
+
+<body>
+	<!-- <div class='drop'>
+		<button class='dropbtn'>Country</button>
+			<div class='content'>
+				<option>Canada</option>
+				<option>United States</option>
+  			</div>
+	</div>
+	
+<div class='drop'>
+		<button class='dropbtn'>State or Province</button>
+			<div class='content'>
+				<option>California</option>
+				<option>Illinois</option>
+			</div>
+	</div>
+	need to add event listeners to automatically update variable values
+--> 
+	
+<form>
+	Country
+	<select id="country">
+		<option>Canada</option>
+		<option>United States</option>
+	</select>
+	<br><br>
+</form>
+	
+<form>
+	State
+	<select id="state">
+		<option>California</option>
+		<option>Illinois</option>
+	</select>
+	<br><br>	
+</form>
+
+<!-- TODO: make the above forms (INTRO) on a separate page from the below forms (FACILITIES) --> 
+	
+<form>
+	Size of facilities (sq feet)<br>
+	<input type="text" id="fac-size"><br>
+</form><br>
+
+<form>
+	Electricity (kWh)<br>
+	<input type="text" id="elec-in"><br>
+</form><br>
+	
+<form>
+	Natural Gas (cubic feet)<br>
+	<input type="text" id="natgas-in"><br>
+</form><br>
+
+<form>
+	Fuel Oil or Kerosine (gallons)<br>
+	<input type="text" id="fueloil-in"><br>
+</form><br>
+
+<form>
+	Water & Wastewater (dollars) <br>
+	<input type="text" id="water-in"><br>
+</form><br>
+
+<form>
+	Solid Waste (tons) <br>
+	<input type="text" id="waste-in"><br>
+</form><br>
+
+
+<!-- TODO: replace button presses with event listeners to automatically do the following --> 
+<input type="button" onclick="populate()" value="populate">
+<input type="button" onclick="main()" value="Graph"> 
+
+
+<p id="testCountry">test</p>
+<p id="testState">test</p>
+<p id="testSize">test</p>
+	
+<canvas id="bar-chart" width="200" height="100"></canvas>
+	
+</body>
+</html>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+
+<script>
+	var country; var state; var size; var elec; var natgas; var fuel; var water; var waste; var solidwaste; 
+	//initializing inputs
+
+	function populate() {
+		//currently populates water & wastewater, solid waste fields based off size of facilities
+		//TODO: populate the other values using the right variables
+
+		size = document.getElementById("fac-size").value; 
+		document.getElementById("water-in").value = (size/1000) * 50 * 12;
+		document.getElementById("waste-in").value = (size/10000) * .1 * 12; 
+	}
+
+	function main() {
+		//assigns variables, makes necessary calculations, and renders the results in a chart
+		//TODO: assign each input variable to the right value (think about where the best place to do this is...)
+
+		//sanity check tests...
+		country = document.getElementById("country");
+		document.getElementById("testCountry").innerHTML = 
+		country.options[country.selectedIndex].text;
+
+		state = document.getElementById("state");
+		document.getElementById("testState").innerHTML = 
+		state.options[state.selectedIndex].text;
+		
+		size = document.getElementById("fac-size").value; 
+		document.getElementById("testSize").innerHTML = size; 
+		
+		
+		elec = size - 10;  //REPLACE W ACTUAL CALCULATIONS! 
+		natgas = size - 20; 
+		fuel = size - 30; 
+		water = size - 40; 
+		waste = size - 50; 
+		solidwaste = size - 60; 
+	
+		makeChart(); 
+	}
+
+	function makeChart() {	
+		//bug: if you type a new inputs, hovering over the bar chart sometimes flashes with the display of old values
+		var bar = new Chart(document.getElementById("bar-chart"), {
+			type: "bar", 
+			data: {
+				labels: ["Electricity", "Natural Gas", "Fuel Oil", "Water & Wastewater", "Waste", "Solid Waste"], 
+				datasets: [
+					{
+						label: "Metric tons CO2", 
+						data: [elec, natgas, fuel, water, waste, solidwaste]
+					}
+				]
+			},
+
+			options: {
+	    		scales: {
+	        		yAxes: [{
+	                	ticks: {
+	                    	beginAtZero: true
+	                	}
+	        		}]
+	    		}
+			}
+		}); 
+	}
+		
+</script>
+
+<style> 
+/* not really using anything here right now */ 
+	.dropbtn {
+		background-color: gray;
+  		color: white;
+  		padding: 16px;
+ 		font-size: 16px;
+  		border: none;
+	}
+	
+	.content {
+		  display: none;
+		  position: absolute;
+		  background-color: #f1f1f1;
+		  min-width: 160px;
+		  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+		  z-index: 1;
+	}
+
+	.content option {
+	  color: black;
+	  padding: 12px 16px;
+	  text-decoration: none;
+	  display: block;
+	}
+
+.content option:hover {background-color: #ddd;}
+
+.drop:hover .content {display: block;}
+
+.drop:hover .dropbtn {background-color: black;}
+</style>
